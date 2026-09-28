@@ -1,0 +1,6 @@
+{
+  "name": "Finance Tracker",
+  "description": "Aplikasi pencatatan keuangan pribadi sederhana untuk mencatat pemasukan dan pengeluaran dengan cepat dan otomatis tanpa backend.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

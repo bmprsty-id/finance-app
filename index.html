@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Finance Tracker - Catat Keuangan Cepat & Sederhana</title>
+    <meta name="description" content="Aplikasi pencatatan keuangan pribadi sederhana dan cepat untuk mencatat pemasukan dan pengeluaran, saldo otomatis, laporan keuangan, dan backup data." />
+    
+    <!-- PWA Primary Meta Tags -->
+    <meta name="theme-color" content="#1e3a8a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Finance" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- Open Graph / Meta -->
+    <meta property="og:title" content="Finance Tracker - Catat Keuangan Cepat & Sederhana" />
+    <meta property="og:description" content="Aplikasi pencatatan keuangan pribadi sederhana dan cepat untuk mencatat pemasukan dan pengeluaran, saldo otomatis, laporan keuangan, dan backup data." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- App Container -->
+    <div class="app-wrapper">
+      
+      <!-- Offline Connectivity Indicator -->
+      <div id="offline-indicator" class="offline-banner" hidden>
+        <span class="offline-dot" aria-hidden="true"></span>
+        <span>Mode Offline — Aplikasi tetap aktif & transaksi tersimpan.</span>
+      </div>
+
+      <!-- Notification Toast -->
+      <div id="notification-toast" class="notification-toast" role="alert" aria-live="assertive" hidden>
+        <span id="notification-message"></span>
+      </div>
+
+      <!-- Header -->
+      <header class="app-header">
+        <div class="brand">
+          <div class="brand-icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="20" height="14" x="2" y="5" rx="3"></rect>
+              <line x1="2" x2="22" y1="10" y2="10"></line>
+              <circle cx="17" cy="15" r="1"></circle>
+            </svg>
+          </div>
+          <div>
+            <h1 class="brand-title">Finance Tracker</h1>
+            <p class="brand-subtitle">Catat keuangan cepat & rapi</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <!-- In-App PWA Install Header Button -->
+          <button type="button" id="btn-header-install" class="btn-icon btn-header-install" aria-label="Pasang Aplikasi (PWA)" title="Pasang Aplikasi ke Layar Utama" hidden>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </button>
+          <!-- Dark Mode Quick Toggle -->
+          <button type="button" id="btn-theme-toggle" class="btn-icon" aria-label="Ganti mode gelap/terang" title="Ganti Tema">
+            <svg id="icon-theme-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+            <svg id="icon-theme-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden>
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2"></path>
+              <path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path>
+              <path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path>
+              <path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path>
+              <path d="m19.07 4.93-1.41 1.41"></path>
+            </svg>
+          </button>
+
+          <!-- Settings Header Shortcut -->
+          <button type="button" id="btn-header-settings" class="btn-icon" data-nav="settings" aria-label="Buka Pengaturan" title="Pengaturan">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Content Views -->
+      <main class="main-content">
+        
+        <!-- ========================================== -->
+        <!-- VIEW 1: DASHBOARD (🏠 Home) -->
+        <!-- ========================================== -->
+        <section id="view-dashboard" class="view-panel">
+          <!-- In-App PWA Install Banner -->
+          <div id="pwa-install-banner" class="pwa-banner" hidden>
+            <div class="pwa-banner-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+            </div>
+            <div class="pwa-banner-content">
+              <span class="pwa-banner-title">Pasang Finance Tracker</span>
+              <span class="pwa-banner-desc">Akses cepat dari layar utama & offline ready.</span>
+            </div>
+            <div class="pwa-banner-actions">
+              <button type="button" id="btn-banner-install" class="btn btn-primary btn-sm">Pasang</button>
+              <button type="button" id="btn-banner-dismiss" class="btn-icon-xs" title="Tutup" aria-label="Tutup notifikasi">✕</button>
+            </div>
+          </div>
+
+          <!-- Total Saldo Card -->
+          <div class="card card-balance">
+            <span class="card-label">Saldo</span>
+            <div class="balance-amount" id="dash-total-balance">Rp0</div>
+            <div class="balance-meta">
+              <span class="card-hint">Total Pemasukan dikurangi Pengeluaran</span>
+            </div>
+          </div>
+
+          <!-- Income & Expense Cards -->
+          <div class="dashboard-grid">
+            <div class="card card-stat card-income">
+              <div class="stat-header">
+                <span class="stat-indicator" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="19" x2="12" y2="5"></line>
+                    <polyline points="5 12 12 5 19 12"></polyline>
+                  </svg>
+                </span>
+                <span class="card-label">Pemasukan</span>
+              </div>
+              <div class="stat-amount income-color" id="dash-total-income">Rp0</div>
+            </div>
+
+            <div class="card card-stat card-expense">
+              <div class="stat-header">
+                <span class="stat-indicator" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <polyline points="19 12 12 19 5 12"></polyline>
+                  </svg>
+                </span>
+                <span class="card-label">Pengeluaran</span>
+              </div>
+              <div class="stat-amount expense-color" id="dash-total-expense">Rp0</div>
+            </div>
+          </div>
+
+          <!-- Quick Action CTA -->
+          <button type="button" class="btn btn-primary btn-block btn-cta-add" data-nav="add">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            + Catat Transaksi Baru
+          </button>
+
+          <!-- Transaksi Terbaru Section -->
+          <div class="card recent-tx-section">
+            <div class="section-header">
+              <h2 class="section-title">Transaksi Terbaru</h2>
+              <button type="button" class="btn-link" data-nav="transactions">Lihat Semua →</button>
+            </div>
+            
+            <div id="dash-recent-list" class="recent-list">
+              <!-- Render 4-5 transaksi terbaru -->
+            </div>
+
+            <div id="dash-empty-state" class="empty-state-mini" hidden>
+              <p>Belum ada transaksi yang dicatat.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 2: TAMBAH TRANSAKSI (➕ Tambah) -->
+        <!-- ========================================== -->
+        <section id="view-add" class="view-panel" hidden>
+          <div class="card form-card">
+            <div class="form-header">
+              <h2 class="form-title">Catat Transaksi</h2>
+              <p class="form-subtitle">Cepat dan praktis dalam beberapa detik.</p>
+            </div>
+
+            <form id="transaction-form" class="transaction-form" novalidate>
+              <!-- Jenis (Pemasukan / Pengeluaran) -->
+              <div class="form-group">
+                <label class="form-label">Jenis</label>
+                <div class="radio-pill-group" role="radiogroup" aria-label="Jenis Transaksi">
+                  <label class="pill-label is-active" id="label-type-income">
+                    <input type="radio" name="type" value="income" class="sr-only" checked />
+                    <span class="pill-content">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="19" x2="12" y2="5"></line>
+                        <polyline points="5 12 12 5 19 12"></polyline>
+                      </svg>
+                      Pemasukan
+                    </span>
+                  </label>
+
+                  <label class="pill-label" id="label-type-expense">
+                    <input type="radio" name="type" value="expense" class="sr-only" />
+                    <span class="pill-content">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <polyline points="19 12 12 19 5 12"></polyline>
+                      </svg>
+                      Pengeluaran
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Nominal -->
+              <div class="form-group">
+                <label for="amount" class="form-label">Nominal</label>
+                <div class="input-currency-wrapper">
+                  <span class="currency-prefix">Rp</span>
+                  <input
+                    type="number"
+                    id="amount"
+                    name="amount"
+                    class="form-input input-currency"
+                    placeholder="0"
+                    min="1"
+                    step="1"
+                    required
+                    inputmode="numeric"
+                  />
+                </div>
+              </div>
+
+              <!-- Kategori -->
+              <div class="form-group">
+                <div class="label-with-action">
+                  <label for="category" class="form-label">Kategori</label>
+                  <button type="button" class="btn-text-sm" id="btn-quick-add-category">+ Kategori Baru</button>
+                </div>
+                <div class="select-wrapper">
+                  <select id="category" name="category" class="form-select" required>
+                    <!-- Kategori di-generate dinamis berdasarkan jenis -->
+                  </select>
+                </div>
+              </div>
+
+              <!-- Tanggal -->
+              <div class="form-group">
+                <label for="date" class="form-label">Tanggal</label>
+                <input
+                  type="date"
+                  id="date"
+                  name="date"
+                  class="form-input"
+                  required
+                />
+              </div>
+
+              <!-- Catatan (Opsional) -->
+              <div class="form-group">
+                <label for="note" class="form-label">Catatan <span class="label-optional">(Opsional)</span></label>
+                <input
+                  type="text"
+                  id="note"
+                  name="note"
+                  class="form-input"
+                  placeholder="Contoh: Bensin motor, Gaji bulanan..."
+                  maxlength="80"
+                />
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-primary btn-block btn-submit">
+                Simpan Transaksi
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 3: TRANSAKSI (📋 Transaksi) -->
+        <!-- ========================================== -->
+        <section id="view-transactions" class="view-panel" hidden>
+          <div class="card history-card">
+            <div class="section-header">
+              <h2 class="section-title">Riwayat Transaksi</h2>
+              <span id="tx-filter-count" class="badge-count">0 Transaksi</span>
+            </div>
+
+            <!-- Filter Jenis: Semua / Pemasukan / Pengeluaran -->
+            <div class="filter-group" role="group" aria-label="Filter Jenis Transaksi">
+              <button type="button" class="btn-filter is-active" data-filter="all">Semua</button>
+              <button type="button" class="btn-filter" data-filter="income">Pemasukan</button>
+              <button type="button" class="btn-filter" data-filter="expense">Pengeluaran</button>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-container">
+              <div class="search-wrapper">
+                <span class="search-icon" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                </span>
+                <input 
+                  type="text" 
+                  id="tx-search-input" 
+                  class="search-input" 
+                  placeholder="Cari kategori atau catatan..." 
+                  aria-label="Cari transaksi"
+                  autocomplete="off"
+                />
+                <button 
+                  type="button" 
+                  id="btn-tx-clear-search" 
+                  class="btn-clear-search" 
+                  aria-label="Hapus teks pencarian" 
+                  title="Hapus pencarian" 
+                  hidden
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            <!-- Filter Rentang Tanggal (Opsional) -->
+            <div class="date-filter-panel">
+              <div class="date-filter-grid">
+                <div class="date-input-group">
+                  <label for="filter-date-from" class="date-label">Dari</label>
+                  <input type="date" id="filter-date-from" class="date-input" />
+                </div>
+                <div class="date-input-group">
+                  <label for="filter-date-to" class="date-label">Sampai</label>
+                  <input type="date" id="filter-date-to" class="date-input" />
+                </div>
+              </div>
+              <button type="button" id="btn-reset-date-filter" class="btn-reset-date" title="Reset Filter Tanggal" aria-label="Reset Filter Tanggal">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                  <path d="M3 3v5h5"></path>
+                </svg>
+                Reset Tanggal
+              </button>
+            </div>
+
+            <!-- Daftar Transaksi (Dikelompokkan per tanggal) -->
+            <div id="tx-grouped-list" class="grouped-transactions-list" aria-live="polite">
+              <!-- Render list di sini -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="tx-empty-state" class="empty-state" hidden>
+              <div class="empty-icon" aria-hidden="true">
+                <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+                  <path d="M3 9h18"></path>
+                  <path d="M9 21V9"></path>
+                </svg>
+              </div>
+              <h3 class="empty-title">Belum ada transaksi</h3>
+              <p class="empty-text">Mulai catat transaksi pertamamu sekarang.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 4: LAPORAN (📊 Laporan) -->
+        <!-- ========================================== -->
+        <section id="view-report" class="view-panel" hidden>
+          <div class="card report-card">
+            <div class="section-header">
+              <h2 class="section-title">Laporan Keuangan</h2>
+            </div>
+
+            <!-- Periode Tabs: Hari ini / Minggu ini / Bulan ini / Semua -->
+            <div class="period-tabs" role="group" aria-label="Periode Laporan">
+              <button type="button" class="btn-period" data-period="today">Hari ini</button>
+              <button type="button" class="btn-period" data-period="week">Minggu ini</button>
+              <button type="button" class="btn-period is-active" data-period="month">Bulan ini</button>
+              <button type="button" class="btn-period" data-period="all">Semua</button>
+            </div>
+
+            <!-- Ringkasan Periode -->
+            <div class="report-summary-box">
+              <h3 class="summary-box-title">Ringkasan Periode</h3>
+              <div class="summary-row">
+                <span class="summary-label">Pemasukan</span>
+                <span class="summary-value income-color" id="rep-income">Rp0</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-label">Pengeluaran</span>
+                <span class="summary-value expense-color" id="rep-expense">Rp0</span>
+              </div>
+              <div class="summary-divider"></div>
+              <div class="summary-row summary-row-total">
+                <span class="summary-label">Selisih (Net)</span>
+                <span class="summary-value font-bold" id="rep-net">Rp0</span>
+              </div>
+            </div>
+
+            <!-- Pengeluaran Berdasarkan Kategori -->
+            <div class="breakdown-section">
+              <h3 class="breakdown-title">Pengeluaran Berdasarkan Kategori</h3>
+              <div id="rep-expense-breakdown" class="category-breakdown-list">
+                <!-- Render bar progress per kategori -->
+              </div>
+            </div>
+
+            <!-- Pemasukan Berdasarkan Kategori -->
+            <div class="breakdown-section">
+              <h3 class="breakdown-title">Pemasukan Berdasarkan Kategori</h3>
+              <div id="rep-income-breakdown" class="category-breakdown-list">
+                <!-- Render bar progress per kategori -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 5: PENGATURAN (⚙️ Pengaturan) -->
+        <!-- ========================================== -->
+        <section id="view-settings" class="view-panel" hidden>
+          <div class="card settings-card">
+            <div class="section-header">
+              <h2 class="section-title">Pengaturan</h2>
+            </div>
+
+            <!-- Kelompok 1: Manajemen Data -->
+            <div class="settings-group">
+              <h3 class="settings-group-title">Manajemen Data</h3>
+              <p class="settings-group-desc">Data tersimpan secara lokal di browser perangkat Anda.</p>
+
+              <div class="settings-btn-grid">
+                <!-- Export CSV -->
+                <button type="button" id="btn-export-csv" class="settings-action-btn">
+                  <div class="settings-btn-icon icon-emerald">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                  </div>
+                  <div class="settings-btn-text">
+                    <span class="settings-btn-title">Export CSV</span>
+                    <span class="settings-btn-subtitle">Buka di Excel atau Google Sheets</span>
+                  </div>
+                </button>
+
+                <!-- Backup Data (JSON) -->
+                <button type="button" id="btn-backup-json" class="settings-action-btn">
+                  <div class="settings-btn-icon icon-blue">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                      <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                      <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                  </div>
+                  <div class="settings-btn-text">
+                    <span class="settings-btn-title">Backup Data</span>
+                    <span class="settings-btn-subtitle">Unduh cadangan data berkas JSON</span>
+                  </div>
+                </button>
+
+                <!-- Import Data (JSON) -->
+                <button type="button" id="btn-trigger-import-json" class="settings-action-btn">
+                  <div class="settings-btn-icon icon-amber">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="17 8 12 3 7 8"></polyline>
+                      <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                  </div>
+                  <div class="settings-btn-text">
+                    <span class="settings-btn-title">Import Data</span>
+                    <span class="settings-btn-subtitle">Pulihkan transaksi dari file JSON</span>
+                  </div>
+                </button>
+                <input type="file" id="input-import-json" accept=".json,application/json" hidden />
+
+                <!-- Hapus Semua Data -->
+                <button type="button" id="btn-reset-data" class="settings-action-btn btn-danger-action">
+                  <div class="settings-btn-icon icon-rose">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                  </div>
+                  <div class="settings-btn-text">
+                    <span class="settings-btn-title">Hapus Semua Data</span>
+                    <span class="settings-btn-subtitle">Kosongkan semua riwayat & pengaturan</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Kelompok 2: Kategori Kustom -->
+            <div class="settings-group">
+              <div class="label-with-action">
+                <h3 class="settings-group-title">Kelola Kategori</h3>
+                <button type="button" class="btn-text-sm" id="btn-open-category-modal">+ Tambah Kategori</button>
+              </div>
+              <p class="settings-group-desc">Kategori aktif untuk pengeluaran dan pemasukan.</p>
+
+              <div class="category-tags-container">
+                <div class="category-tag-section">
+                  <span class="tag-section-title">Pemasukan:</span>
+                  <div id="tags-income" class="tag-badges-wrap"></div>
+                </div>
+                <div class="category-tag-section">
+                  <span class="tag-section-title">Pengeluaran:</span>
+                  <div id="tags-expense" class="tag-badges-wrap"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kelompok 3: Tampilan -->
+            <div class="settings-group">
+              <h3 class="settings-group-title">Tampilan</h3>
+              <div class="setting-toggle-row">
+                <div class="toggle-text">
+                  <span class="toggle-label">Mode Gelap (Dark Mode)</span>
+                  <span class="toggle-desc">Nyaman untuk penggunaan di malam hari</span>
+                </div>
+                <label class="switch-toggle" for="switch-dark-mode">
+                  <input type="checkbox" id="switch-dark-mode" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Kelompok 4: Aplikasi PWA -->
+            <div class="settings-group" id="settings-pwa-group">
+              <h3 class="settings-group-title">Aplikasi Web (PWA)</h3>
+              <div class="setting-pwa-card">
+                <div class="setting-pwa-info">
+                  <span class="setting-pwa-title">Status Instalasi</span>
+                  <span id="pwa-status-badge" class="badge-pwa-status">Siap Dipasang</span>
+                </div>
+                <button type="button" id="btn-settings-install" class="btn btn-secondary btn-sm">
+                  Pasang Aplikasi
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+
+      <!-- Bottom Navigation Bar (Mobile-first, desktop friendly) -->
+      <nav class="bottom-nav" aria-label="Navigasi Utama">
+        <button type="button" class="nav-item is-active" data-nav="dashboard" id="nav-btn-dashboard">
+          <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span class="nav-label">Dashboard</span>
+        </button>
+
+        <button type="button" class="nav-item nav-item-highlight" data-nav="add" id="nav-btn-add">
+          <div class="add-icon-circle">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </div>
+          <span class="nav-label">Tambah</span>
+        </button>
+
+        <button type="button" class="nav-item" data-nav="transactions" id="nav-btn-transactions">
+          <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+            <line x1="9" y1="11" x2="15" y2="11"></line>
+            <line x1="9" y1="16" x2="13" y2="16"></line>
+          </svg>
+          <span class="nav-label">Transaksi</span>
+        </button>
+
+        <button type="button" class="nav-item" data-nav="report" id="nav-btn-report">
+          <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <span class="nav-label">Laporan</span>
+        </button>
+
+        <button type="button" class="nav-item" data-nav="settings" id="nav-btn-settings">
+          <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <span class="nav-label">Pengaturan</span>
+        </button>
+      </nav>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 1: KONFIRMASI UMUM / HAPUS -->
+    <!-- ========================================== -->
+    <div id="confirmation-modal" class="modal-backdrop" hidden>
+      <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <h3 id="modal-title" class="modal-title">Konfirmasi</h3>
+        <p id="modal-description" class="modal-description">Apakah Anda yakin?</p>
+        <div class="modal-actions">
+          <button type="button" id="btn-modal-cancel" class="btn btn-secondary">Batal</button>
+          <button type="button" id="btn-modal-confirm" class="btn btn-danger">Hapus</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 2: EDIT TRANSAKSI -->
+    <!-- ========================================== -->
+    <div id="edit-tx-modal" class="modal-backdrop" hidden>
+      <div class="modal-dialog modal-dialog-lg" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
+        <div class="modal-header-row">
+          <h3 id="edit-modal-title" class="modal-title">Edit Transaksi</h3>
+          <button type="button" id="btn-close-edit-modal" class="btn-close-modal" aria-label="Tutup modal">✕</button>
+        </div>
+
+        <form id="edit-transaction-form" novalidate>
+          <input type="hidden" id="edit-tx-id" />
+
+          <div class="form-group">
+            <label class="form-label">Jenis</label>
+            <div class="radio-pill-group" role="radiogroup">
+              <label class="pill-label is-active" id="edit-label-type-income">
+                <input type="radio" name="edit-type" value="income" class="sr-only" checked />
+                <span class="pill-content">Pemasukan</span>
+              </label>
+              <label class="pill-label" id="edit-label-type-expense">
+                <input type="radio" name="edit-type" value="expense" class="sr-only" />
+                <span class="pill-content">Pengeluaran</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-amount" class="form-label">Nominal (Rp)</label>
+            <input type="number" id="edit-amount" class="form-input" min="1" required />
+          </div>
+
+          <div class="form-group">
+            <label for="edit-category" class="form-label">Kategori</label>
+            <select id="edit-category" class="form-select" required></select>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-date" class="form-label">Tanggal</label>
+            <input type="date" id="edit-date" class="form-input" required />
+          </div>
+
+          <div class="form-group">
+            <label for="edit-note" class="form-label">Catatan</label>
+            <input type="text" id="edit-note" class="form-input" maxlength="80" />
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" id="btn-cancel-edit" class="btn btn-secondary">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 3: TAMBAH KATEGORI BARU -->
+    <!-- ========================================== -->
+    <div id="add-category-modal" class="modal-backdrop" hidden>
+      <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="cat-modal-title">
+        <div class="modal-header-row">
+          <h3 id="cat-modal-title" class="modal-title">Tambah Kategori</h3>
+          <button type="button" id="btn-close-cat-modal" class="btn-close-modal" aria-label="Tutup modal">✕</button>
+        </div>
+
+        <form id="add-category-form" novalidate>
+          <div class="form-group">
+            <label class="form-label">Jenis Kategori</label>
+            <div class="radio-pill-group">
+              <label class="pill-label is-active" id="label-cat-income">
+                <input type="radio" name="cat-type" value="income" class="sr-only" checked />
+                <span class="pill-content">Pemasukan</span>
+              </label>
+              <label class="pill-label" id="label-cat-expense">
+                <input type="radio" name="cat-type" value="expense" class="sr-only" />
+                <span class="pill-content">Pengeluaran</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="new-category-name" class="form-label">Nama Kategori</label>
+            <input type="text" id="new-category-name" class="form-input" placeholder="Contoh: Investasi, Kopi, dsb" maxlength="25" required />
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" id="btn-cancel-cat" class="btn btn-secondary">Batal</button>
+            <button type="submit" class="btn btn-primary">Tambah</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 4: PANDUAN INSTALASI IOS SAFARI -->
+    <!-- ========================================== -->
+    <div id="ios-install-modal" class="modal-backdrop" hidden>
+      <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="ios-modal-title">
+        <div class="modal-header-row">
+          <h3 id="ios-modal-title" class="modal-title">Pasang di iPhone / iPad</h3>
+          <button type="button" id="btn-close-ios-modal" class="btn-close-modal" aria-label="Tutup modal">✕</button>
+        </div>
+
+        <div class="ios-install-steps">
+          <div class="ios-step-item">
+            <div class="ios-step-badge">1</div>
+            <div class="ios-step-text">
+              Buka aplikasi di <strong>Safari</strong>, lalu ketuk tombol <strong>Bagikan (Share)</strong>
+              <span class="ios-share-icon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                  <polyline points="16 6 12 2 8 6"></polyline>
+                  <line x1="12" y1="2" x2="12" y2="15"></line>
+                </svg>
+              </span>
+              di bagian bawah layar.
+            </div>
+          </div>
+
+          <div class="ios-step-item">
+            <div class="ios-step-badge">2</div>
+            <div class="ios-step-text">
+              Gulir menu ke bawah lalu pilih <strong>"Tambah ke Layar Utama" (Add to Home Screen)</strong>
+              <span class="ios-add-icon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+                  <line x1="12" y1="8" x2="12" y2="16"></line>
+                  <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <div class="ios-step-item">
+            <div class="ios-step-badge">3</div>
+            <div class="ios-step-text">
+              Ketuk <strong>Tambah (Add)</strong> di pojok kanan atas. Aplikasi siap digunakan secara mandiri layaknya aplikasi App Store!
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" id="btn-close-ios-guide" class="btn btn-primary btn-block">Mengerti</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vanilla JavaScript -->
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
