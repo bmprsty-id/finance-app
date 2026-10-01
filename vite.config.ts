@@ -14,8 +14,8 @@ export default defineConfig(() => {
         includeAssets: ['apple-touch-icon.png', 'icon.svg', 'pwa-192x192.png', 'pwa-512x512.png', 'pwa-maskable-512x512.png'],
         manifest: {
           id: '/',
-          name: 'Finance Tracker',
-          short_name: 'Finance',
+          name: 'FiNOVA',
+          short_name: 'FiNOVA',
           description: 'Aplikasi pencatatan keuangan pribadi sederhana, cepat, dan rapi tanpa backend.',
           theme_color: '#1e3a8a',
           background_color: '#0f172a',

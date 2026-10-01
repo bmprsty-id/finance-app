@@ -1,4 +1,4 @@
-# Finance Tracker
+# FiNOVA
 
 Aplikasi pencatatan keuangan pribadi yang **sederhana, cepat dipakai, dan berfokus pada pencatatan serta kondisi keuangan**. Dirancang khusus agar pengguna (driver, freelancer, pekerja harian, maupun pelaku usaha kecil) dapat mencatat transaksi dalam beberapa detik tanpa ribet, tanpa login, dan tanpa server backend.
 
@@ -29,24 +29,37 @@ Form input yang efisien untuk mencatat dalam beberapa detik:
 - **Filter Rentang Tanggal**: Memilih tanggal mulai dan tanggal akhir secara fleksibel.
 - **Aksi Transaksi**: Tombol **Edit Transaksi** dan **Hapus Transaksi** dengan konfirmasi dialog aman.
 
-### 4. 📊 Laporan Keuangan
-- **Pilihan Periode**: `Hari ini`, `Minggu ini`, `Bulan ini`, `Semua`.
-- **Ringkasan Periode**: Total Pemasukan, Total Pengeluaran, dan Selisih Bersih (*Net*).
-- **Breakdown Kategori**: Persentase pengeluaran dan pemasukan per kategori dengan grafik progress bar visual.
+### 4. 🎯 Target Pembelian (Wishlist & Nabung Impian)
+Fitur perencanaan barang impian untuk menabung secara disiplin dan bertahap:
+- **Pilihan Cepat Inspirasi Target**: Tombol preset siap pakai untuk Smartphone, Laptop, Motor, Liburan, Dana Darurat, dan Sepatu.
+- **Pencatatan Target Barang**: Nama barang, estimasi harga, kategori, dan target tanggal tercapai.
+- **Indikator Progres Visual**: Progress bar real-time, persentase ketercapaian, sisa uang yang dibutuhkan, dan status perayaan saat target telah tercapai.
+- **Rekomendasi Tabungan Cerdas**: Menghitung estimasi nominal yang perlu disisihkan per hari/minggu berdasarkan batas waktu yang ditentukan.
+- **Setor Tabungan Cepat (+ Nabung)**: Pilihan nominal cepat (+20rb, +50rb, +100rb, +250rb, +500rb, +1jt) dan opsi pencatatan otomatis ke riwayat transaksi kategori Tabungan.
+- **Tarik Dana / Sesuaikan Tabungan**: Fleksibilitas jika ada kebutuhan mendesak.
+- **Widget Target di Dashboard**: Ringkasan target teratas langsung di layar utama.
 
-### 5. 🏷️ Kategori
+### 5. 📊 Laporan Keuangan & Visual Charts (Didukung Chart.js)
+- **Pilihan Periode Fleksibel**: `Hari ini`, `Minggu ini`, `Bulan ini`, `Semua`.
+- **Grafik Tren Arus Kas Interaktif (Bar & Line Toggle)**: Beralih bebas antara grafik batang dan kurva garis halus membandingkan pemasukan dan pengeluaran secara periodik dengan tooltip interaktif berformat Rupiah.
+- **Grafik Donut Alokasi Pengeluaran per Kategori**: Visualisasi Doughnut interaktif yang memetakan persentase dan nominal pengeluaran terbesar per kategori.
+- **Grafik Donut Rasio Arus Kas**: Proporsi perbandingan pemasukan vs pengeluaran serta persentase Rasio Tabungan (*Savings Rate*).
+- **Grafik Progres Target Pembelian**: Grafik perbandingan visual horizontal yang memantau perkembangan seluruh barang impian yang sedang ditabung.
+- **Metrik Finansial Cerdas**: Status kesehatan kas (*Sehat / Waspada / Defisit*), Rasio Tabungan, dan estimasi Rata-rata Pengeluaran per Hari.
+
+### 6. 🏷️ Kategori
 - **Kategori Pemasukan Bawaan**: Gaji, Driver, Freelance, Bonus, Penjualan, Lainnya.
-- **Kategori Pengeluaran Bawaan**: Makanan, Bensin, Transportasi, Tagihan, Belanja, Hiburan, Kesehatan, Lainnya.
+- **Kategori Pengeluaran Bawaan**: Makanan, Bensin, Transportasi, Tagihan, Belanja, Hiburan, Kesehatan, Tabungan, Lainnya.
 - **Kategori Kustom**: Pengguna dapat menambahkan kategori baru sendiri kapan saja.
 
-### 6. ⚙️ Pengaturan & Manajemen Data
+### 7. ⚙️ Pengaturan & Manajemen Data
 - **Export CSV**: Unduh pembukuan ke berkas CSV yang kompatibel dengan Microsoft Excel dan Google Sheets (UTF-8 BOM).
-- **Backup Data (JSON)**: Unduh cadangan seluruh transaksi dan kategori ke file `.json`.
-- **Import Data (JSON)**: Pulihkan riwayat transaksi dari file cadangan `.json`.
-- **Hapus Semua Data**: Reset total dengan dialog konfirmasi.
+- **Backup Data (JSON)**: Unduh cadangan seluruh transaksi, kategori, dan target pembelian ke file `.json`.
+- **Import Data (JSON)**: Pulihkan seluruh data transaksi dan target dari file cadangan `.json`.
+- **Hapus Semua Data**: Reset total transaksi dan target dengan dialog konfirmasi aman.
 - **Mode Gelap (Dark Mode)**: Tema gelap yang nyaman untuk penggunaan malam hari.
 
-### 7. 📲 Progressive Web App (PWA) Standalone
+### 8. 📲 Progressive Web App (PWA) Standalone
 - **Dukungan PWA Penuh**: Dapat diinstal di Android, iOS, Windows, Mac, dan Linux.
 - **Tampilan Rapi & Layar Penuh (*Standalone*)**: Membuka aplikasi tanpa address bar browser layaknya aplikasi native.
 - **Offline First**: Dilengkapi Service Worker caching sehingga aplikasi tetap terbuka saat tidak ada sinyal.

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>Finance Tracker - Catat Keuangan Cepat & Sederhana</title>
+    <title>FiNOVA - Catat Keuangan Cepat & Sederhana</title>
     <meta name="description" content="Aplikasi pencatatan keuangan pribadi sederhana dan cepat untuk mencatat pemasukan dan pengeluaran, saldo otomatis, laporan keuangan, dan backup data." />
     
     <!-- PWA Primary Meta Tags -->
@@ -11,13 +11,13 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Finance" />
+    <meta name="apple-mobile-web-app-title" content="FiNOVA" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <link rel="manifest" href="/manifest.webmanifest" />
 
     <!-- Open Graph / Meta -->
-    <meta property="og:title" content="Finance Tracker - Catat Keuangan Cepat & Sederhana" />
+    <meta property="og:title" content="FiNOVA - Catat Keuangan Cepat & Sederhana" />
     <meta property="og:description" content="Aplikasi pencatatan keuangan pribadi sederhana dan cepat untuk mencatat pemasukan dan pengeluaran, saldo otomatis, laporan keuangan, dan backup data." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -47,7 +47,7 @@
 
       <!-- Header -->
       <header class="app-header">
-        <div class="brand">
+        <div class="brand" data-nav="dashboard" role="button" tabindex="0" title="Ke Dashboard" style="cursor: pointer;">
           <div class="brand-icon" aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <rect width="20" height="14" x="2" y="5" rx="3"></rect>
@@ -56,7 +56,7 @@
             </svg>
           </div>
           <div>
-            <h1 class="brand-title">Finance Tracker</h1>
+            <h1 class="brand-title">FiNOVA</h1>
             <p class="brand-subtitle">Catat keuangan cepat & rapi</p>
           </div>
         </div>
@@ -115,7 +115,7 @@
               </svg>
             </div>
             <div class="pwa-banner-content">
-              <span class="pwa-banner-title">Pasang Finance Tracker</span>
+              <span class="pwa-banner-title">Pasang FiNOVA</span>
               <span class="pwa-banner-desc">Akses cepat dari layar utama & offline ready.</span>
             </div>
             <div class="pwa-banner-actions">
@@ -184,6 +184,20 @@
 
             <div id="dash-empty-state" class="empty-state-mini" hidden>
               <p>Belum ada transaksi yang dicatat.</p>
+            </div>
+          </div>
+
+          <!-- Target Pembelian Widget di Dashboard -->
+          <div class="card dash-target-widget">
+            <div class="section-header">
+              <div class="widget-title-group">
+                <span class="widget-target-icon" aria-hidden="true">🎯</span>
+                <h2 class="section-title">Target Pembelian</h2>
+              </div>
+              <button type="button" class="btn-link" data-nav="targets">Buka Target →</button>
+            </div>
+            <div id="dash-target-preview" class="dash-target-preview-wrap">
+              <!-- Rendered via JS -->
             </div>
           </div>
         </section>
@@ -381,12 +395,84 @@
         </section>
 
         <!-- ========================================== -->
+        <!-- VIEW: TARGET PEMBELIAN (🎯 Target) -->
+        <!-- ========================================== -->
+        <section id="view-targets" class="view-panel" hidden>
+          <!-- Hero Card: Target & Tabungan Overview -->
+          <div class="card target-hero-card">
+            <div class="target-hero-header">
+              <div>
+                <h2 class="target-hero-title">Target Pembelian</h2>
+                <p class="target-hero-subtitle">Rencanakan barang impian & tabung bertahap</p>
+              </div>
+              <button type="button" id="btn-open-add-target" class="btn btn-primary btn-sm">
+                + Buat Target
+              </button>
+            </div>
+
+            <!-- Summary Stats Grid -->
+            <div class="target-stats-grid">
+              <div class="target-stat-item">
+                <span class="target-stat-label">Total Terkumpul</span>
+                <span class="target-stat-val income-color" id="target-total-saved">Rp0</span>
+              </div>
+              <div class="target-stat-item">
+                <span class="target-stat-label">Total Target Harga</span>
+                <span class="target-stat-val" id="target-total-needed">Rp0</span>
+              </div>
+              <div class="target-stat-item">
+                <span class="target-stat-label">Sisa Kebutuhan</span>
+                <span class="target-stat-val" id="target-total-remaining">Rp0</span>
+              </div>
+            </div>
+
+            <!-- Global Progress Bar -->
+            <div class="target-global-progress-box">
+              <div class="progress-label-row">
+                <span>Progres Seluruh Target</span>
+                <span id="target-global-pct" class="font-bold">0%</span>
+              </div>
+              <div class="progress-track">
+                <div id="target-global-bar" class="progress-bar-fill" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Target Filter & List Card -->
+          <div class="card target-list-card">
+            <div class="filter-group target-filter-group" role="group" aria-label="Filter Status Target">
+              <button type="button" class="btn-filter is-active" data-target-filter="all">Semua (<span id="count-target-all">0</span>)</button>
+              <button type="button" class="btn-filter" data-target-filter="active">Berjalan (<span id="count-target-active">0</span>)</button>
+              <button type="button" class="btn-filter" data-target-filter="completed">Tercapai 🎉 (<span id="count-target-completed">0</span>)</button>
+            </div>
+
+            <!-- Target Items Container -->
+            <div id="target-items-list" class="target-items-list">
+              <!-- Rendered via JS -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="target-empty-state" class="target-empty-state" hidden>
+              <div class="target-empty-icon" aria-hidden="true">🎯</div>
+              <h3 class="target-empty-title">Belum Ada Target Pembelian</h3>
+              <p class="target-empty-desc">Ingin beli smartphone, motor, laptop, atau liburan? Tuliskan target Anda di sini dan pantau progres tabungan Anda hingga terbeli!</p>
+              <button type="button" id="btn-empty-add-target" class="btn btn-primary btn-sm">
+                + Buat Target Sekarang
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
         <!-- VIEW 4: LAPORAN (📊 Laporan) -->
         <!-- ========================================== -->
         <section id="view-report" class="view-panel" hidden>
           <div class="card report-card">
             <div class="section-header">
-              <h2 class="section-title">Laporan Keuangan</h2>
+              <div>
+                <h2 class="section-title">Laporan Keuangan</h2>
+                <p class="card-subtitle">Analisis grafik arus kas & distribusi dana</p>
+              </div>
             </div>
 
             <!-- Periode Tabs: Hari ini / Minggu ini / Bulan ini / Semua -->
@@ -397,29 +483,146 @@
               <button type="button" class="btn-period" data-period="all">Semua</button>
             </div>
 
-            <!-- Ringkasan Periode -->
+            <!-- Ringkasan Periode & Insight Cerdas -->
             <div class="report-summary-box">
-              <h3 class="summary-box-title">Ringkasan Periode</h3>
+              <div class="summary-box-header">
+                <h3 class="summary-box-title">Ringkasan Periode</h3>
+                <span id="rep-cashflow-status" class="cashflow-status-badge">Sehat</span>
+              </div>
+
               <div class="summary-row">
-                <span class="summary-label">Pemasukan</span>
+                <span class="summary-label">Total Pemasukan</span>
                 <span class="summary-value income-color" id="rep-income">Rp0</span>
               </div>
               <div class="summary-row">
-                <span class="summary-label">Pengeluaran</span>
+                <span class="summary-label">Total Pengeluaran</span>
                 <span class="summary-value expense-color" id="rep-expense">Rp0</span>
               </div>
               <div class="summary-divider"></div>
               <div class="summary-row summary-row-total">
-                <span class="summary-label">Selisih (Net)</span>
+                <span class="summary-label">Selisih Bersih (Net)</span>
                 <span class="summary-value font-bold" id="rep-net">Rp0</span>
               </div>
             </div>
 
-            <!-- Pengeluaran Berdasarkan Kategori -->
-            <div class="breakdown-section">
-              <h3 class="breakdown-title">Pengeluaran Berdasarkan Kategori</h3>
+            <!-- Metrik Finansial Cerdas -->
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <span class="metric-label">Rasio Tabungan</span>
+                <span class="metric-val" id="rep-metric-savings-rate">0%</span>
+                <span class="metric-sub" id="rep-metric-savings-sub">Dari total pemasukan</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Rata-rata / Hari</span>
+                <span class="metric-val" id="rep-metric-daily-avg">Rp0</span>
+                <span class="metric-sub">Pengeluaran harian</span>
+              </div>
+            </div>
+
+            <!-- CHART 1: Grafik Tren Arus Kas Interaktif (Chart.js Bar & Line) -->
+            <div class="chart-section">
+              <div class="chart-header">
+                <div>
+                  <h3 class="chart-title">Grafik Tren Arus Kas</h3>
+                  <p class="chart-subtitle" id="chart-trend-subtitle">Perbandingan pemasukan & pengeluaran periodik</p>
+                </div>
+                <div class="chart-actions-row">
+                  <div class="chart-toggle-group" role="group" aria-label="Tipe Grafik">
+                    <button type="button" id="btn-chart-bar" class="btn-chart-toggle is-active" data-chart-type="bar" title="Tampilan Grafik Batang">
+                      📊 Batang
+                    </button>
+                    <button type="button" id="btn-chart-line" class="btn-chart-toggle" data-chart-type="line" title="Tampilan Grafik Garis">
+                      📈 Garis
+                    </button>
+                  </div>
+                  <div class="chart-legend">
+                    <div class="legend-item"><span class="legend-dot dot-income"></span><span>Pemasukan</span></div>
+                    <div class="legend-item"><span class="legend-dot dot-expense"></span><span>Pengeluaran</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Canvas Chart.js Tren -->
+              <div class="chart-canvas-wrap">
+                <canvas id="chart-cashflow-canvas"></canvas>
+              </div>
+            </div>
+
+            <!-- CHART 2: Proporsi Arus Kas & Rasio Pengeluaran -->
+            <div class="chart-section">
+              <div class="chart-header">
+                <div>
+                  <h3 class="chart-title">Proporsi Arus Kas (Pemasukan vs Pengeluaran)</h3>
+                  <p class="chart-subtitle">Rasio belanja terhadap pendapatan masuk</p>
+                </div>
+              </div>
+              
+              <div class="donut-chart-container">
+                <div class="donut-chart-visual">
+                  <canvas id="chart-cashflow-ratio-canvas"></canvas>
+                  <div class="donut-center-info">
+                    <span class="donut-center-pct" id="donut-savings-pct">0%</span>
+                    <span class="donut-center-lbl">Tersimpan</span>
+                  </div>
+                </div>
+                <div class="donut-legend-list">
+                  <div class="donut-legend-row">
+                    <span class="legend-indicator bg-income"></span>
+                    <div class="donut-legend-info">
+                      <span class="donut-legend-name">Pemasukan</span>
+                      <span class="donut-legend-val" id="donut-income-txt">Rp0 (0%)</span>
+                    </div>
+                  </div>
+                  <div class="donut-legend-row">
+                    <span class="legend-indicator bg-expense"></span>
+                    <div class="donut-legend-info">
+                      <span class="donut-legend-name">Pengeluaran</span>
+                      <span class="donut-legend-val" id="donut-expense-txt">Rp0 (0%)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CHART 3: Distribusi Pengeluaran Berdasarkan Kategori (Doughnut Chart.js) -->
+            <div class="chart-section">
+              <div class="chart-header">
+                <div>
+                  <h3 class="chart-title">Distribusi Pengeluaran per Kategori</h3>
+                  <p class="chart-subtitle">Peta alokasi belanja terbesar</p>
+                </div>
+              </div>
+
+              <div class="chart-donut-wrap">
+                <canvas id="chart-expense-categories-canvas"></canvas>
+              </div>
+
+              <!-- Visual Multi-segment Distribution Bar -->
+              <div id="expense-distribution-bar" class="distribution-bar" title="Distribusi Pengeluaran">
+                <!-- Segments rendered via JS -->
+              </div>
+
               <div id="rep-expense-breakdown" class="category-breakdown-list">
                 <!-- Render bar progress per kategori -->
+              </div>
+            </div>
+
+            <!-- CHART 4: Progres Target Pembelian Impian (Wishlist Tracker) -->
+            <div class="chart-section">
+              <div class="chart-header">
+                <div>
+                  <h3 class="chart-title">🎯 Progres Target Pembelian</h3>
+                  <p class="chart-subtitle">Realisasi tabungan terhadap barang yang ingin dibeli</p>
+                </div>
+                <button type="button" class="btn-link" data-nav="targets">Kelola Target →</button>
+              </div>
+
+              <div class="chart-canvas-wrap chart-canvas-targets">
+                <canvas id="chart-targets-progress-canvas"></canvas>
+              </div>
+
+              <div id="report-targets-summary-list" class="report-targets-list">
+                <!-- Rendered via JS -->
               </div>
             </div>
 
@@ -438,8 +641,9 @@
         <!-- ========================================== -->
         <section id="view-settings" class="view-panel" hidden>
           <div class="card settings-card">
-            <div class="section-header">
+            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
               <h2 class="section-title">Pengaturan</h2>
+              <button type="button" class="btn-link" data-nav="dashboard" style="font-size: 0.8125rem;">← Ke Dashboard</button>
             </div>
 
             <!-- Kelompok 1: Manajemen Data -->
@@ -574,16 +778,6 @@
           <span class="nav-label">Dashboard</span>
         </button>
 
-        <button type="button" class="nav-item nav-item-highlight" data-nav="add" id="nav-btn-add">
-          <div class="add-icon-circle">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-          </div>
-          <span class="nav-label">Tambah</span>
-        </button>
-
         <button type="button" class="nav-item" data-nav="transactions" id="nav-btn-transactions">
           <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
@@ -594,6 +788,25 @@
           <span class="nav-label">Transaksi</span>
         </button>
 
+        <button type="button" class="nav-item nav-item-highlight" data-nav="add" id="nav-btn-add">
+          <div class="add-icon-circle">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </div>
+          <span class="nav-label">Tambah</span>
+        </button>
+
+        <button type="button" class="nav-item" data-nav="targets" id="nav-btn-targets">
+          <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="12" r="6"></circle>
+            <circle cx="12" cy="12" r="2"></circle>
+          </svg>
+          <span class="nav-label">Target</span>
+        </button>
+
         <button type="button" class="nav-item" data-nav="report" id="nav-btn-report">
           <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="20" x2="18" y2="10"></line>
@@ -601,14 +814,6 @@
             <line x1="6" y1="20" x2="6" y2="14"></line>
           </svg>
           <span class="nav-label">Laporan</span>
-        </button>
-
-        <button type="button" class="nav-item" data-nav="settings" id="nav-btn-settings">
-          <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-            <circle cx="12" cy="12" r="3"></circle>
-          </svg>
-          <span class="nav-label">Pengaturan</span>
         </button>
       </nav>
 
@@ -772,6 +977,173 @@
         <div class="modal-actions">
           <button type="button" id="btn-close-ios-guide" class="btn btn-primary btn-block">Mengerti</button>
         </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 5: TAMBAH / EDIT TARGET PEMBELIAN -->
+    <!-- ========================================== -->
+    <div id="target-modal" class="modal-backdrop" hidden>
+      <div class="modal-dialog modal-dialog-lg" role="dialog" aria-modal="true" aria-labelledby="target-modal-title">
+        <div class="modal-header-row">
+          <h3 id="target-modal-title" class="modal-title">Buat Target Pembelian</h3>
+          <button type="button" id="btn-close-target-modal" class="btn-close-modal" aria-label="Tutup modal">✕</button>
+        </div>
+
+        <form id="target-form" novalidate>
+          <input type="hidden" id="target-form-id" />
+
+          <!-- Pilihan Cepat / Inspirasi Target -->
+          <div class="target-presets-section">
+            <span class="target-presets-title">💡 Pilihan Cepat Barang Impian:</span>
+            <div class="target-presets-chips">
+              <button type="button" class="btn-preset-target" data-preset-name="Smartphone Baru" data-preset-cat="Elektronik" data-preset-amount="3500000">📱 Smartphone (3.5jt)</button>
+              <button type="button" class="btn-preset-target" data-preset-name="Laptop Kerja / Kuliah" data-preset-cat="Elektronik" data-preset-amount="8000000">💻 Laptop (8jt)</button>
+              <button type="button" class="btn-preset-target" data-preset-name="Servis / DP Motor" data-preset-cat="Kendaraan" data-preset-amount="3000000">🛵 Motor (3jt)</button>
+              <button type="button" class="btn-preset-target" data-preset-name="Liburan Akhir Tahun" data-preset-cat="Liburan" data-preset-amount="2500000">🏖️ Liburan (2.5jt)</button>
+              <button type="button" class="btn-preset-target" data-preset-name="Dana Darurat" data-preset-cat="Dana Darurat" data-preset-amount="5000000">🛡️ Dana Darurat (5jt)</button>
+              <button type="button" class="btn-preset-target" data-preset-name="Sepatu & Gaya Hidup" data-preset-cat="Pakaian" data-preset-amount="1200000">👟 Sepatu (1.2jt)</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="target-form-name" class="form-label">Nama Barang / Target <span class="required-star">*</span></label>
+            <input type="text" id="target-form-name" class="form-input" placeholder="Contoh: Laptop Kerja, Smartphone, Helm KYT" maxlength="50" required />
+          </div>
+
+          <div class="form-group">
+            <label for="target-form-amount" class="form-label">Target Nominal (Harga Barang) <span class="required-star">*</span></label>
+            <input type="number" id="target-form-amount" class="form-input" placeholder="Contoh: 5000000" min="1000" required />
+          </div>
+
+          <div class="form-group">
+            <label for="target-form-saved" class="form-label">Tabungan Awal (Opsional)</label>
+            <input type="number" id="target-form-saved" class="form-input" placeholder="0" min="0" value="0" />
+            <span class="field-hint">Uang yang sudah Anda sisihkan untuk target ini</span>
+          </div>
+
+          <div class="form-group">
+            <label for="target-form-category" class="form-label">Kategori</label>
+            <select id="target-form-category" class="form-select">
+              <option value="Elektronik">📱 Elektronik & Gadget</option>
+              <option value="Kendaraan">🛵 Kendaraan & Otomotif</option>
+              <option value="Rumah Tangga">🏠 Rumah Tangga & Perabot</option>
+              <option value="Liburan">🏖️ Liburan & Healing</option>
+              <option value="Pakaian">👕 Pakaian & Gaya Hidup</option>
+              <option value="Dana Darurat">🛡️ Dana Darurat</option>
+              <option value="Pendidikan">📚 Pendidikan & Kursus</option>
+              <option value="Lainnya">📦 Lainnya</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="target-form-date" class="form-label">Target Tanggal Tercapai (Opsional)</label>
+            <input type="date" id="target-form-date" class="form-input" />
+            <span class="field-hint">Bantu menghitung estimasi tabungan per hari/minggu</span>
+          </div>
+
+          <div class="form-group">
+            <label for="target-form-note" class="form-label">Catatan Tambahan (Opsional)</label>
+            <input type="text" id="target-form-note" class="form-input" placeholder="Misal: Beli pas promo Harbolnas" maxlength="80" />
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" id="btn-cancel-target" class="btn btn-secondary">Batal</button>
+            <button type="submit" id="btn-save-target" class="btn btn-primary">Simpan Target</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 6: NABUNG KE TARGET (SETOR TABUNGAN) -->
+    <!-- ========================================== -->
+    <div id="deposit-target-modal" class="modal-backdrop" hidden>
+      <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="deposit-modal-title">
+        <div class="modal-header-row">
+          <h3 id="deposit-modal-title" class="modal-title">Nabung ke Target</h3>
+          <button type="button" id="btn-close-deposit-modal" class="btn-close-modal" aria-label="Tutup modal">✕</button>
+        </div>
+
+        <form id="deposit-target-form" novalidate>
+          <input type="hidden" id="deposit-target-id" />
+          
+          <div class="deposit-target-banner">
+            <span class="deposit-target-name" id="deposit-target-name">-</span>
+            <div class="deposit-target-progress-info">
+              <span>Terkumpul: <strong id="deposit-current-saved">Rp0</strong></span>
+              <span>Sisa: <strong id="deposit-remaining-needed">Rp0</strong></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="deposit-amount" class="form-label">Nominal yang Ditabung (Rp) <span class="required-star">*</span></label>
+            <input type="number" id="deposit-amount" class="form-input" placeholder="Misal: 100000" min="1000" required />
+          </div>
+
+          <!-- Quick chips -->
+          <div class="quick-chips-row">
+            <button type="button" class="btn-chip" data-deposit-add="20000">+20rb</button>
+            <button type="button" class="btn-chip" data-deposit-add="50000">+50rb</button>
+            <button type="button" class="btn-chip" data-deposit-add="100000">+100rb</button>
+            <button type="button" class="btn-chip" data-deposit-add="250000">+250rb</button>
+            <button type="button" class="btn-chip" data-deposit-add="500000">+500rb</button>
+            <button type="button" class="btn-chip" data-deposit-add="1000000">+1 Jt</button>
+          </div>
+
+          <!-- Auto record as expense transaction option -->
+          <div class="deposit-checkbox-row">
+            <label class="checkbox-label" for="deposit-record-tx">
+              <input type="checkbox" id="deposit-record-tx" checked />
+              <span>Catat juga sebagai pengeluaran di Riwayat Transaksi (Kategori: <em>Tabungan</em>)</span>
+            </label>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" id="btn-cancel-deposit" class="btn btn-secondary">Batal</button>
+            <button type="submit" class="btn btn-primary">Tabung Sekarang</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 7: TARIK TABUNGAN DARI TARGET -->
+    <!-- ========================================== -->
+    <div id="withdraw-target-modal" class="modal-backdrop" hidden>
+      <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="withdraw-modal-title">
+        <div class="modal-header-row">
+          <h3 id="withdraw-modal-title" class="modal-title">Tarik Tabungan Target</h3>
+          <button type="button" id="btn-close-withdraw-modal" class="btn-close-modal" aria-label="Tutup modal">✕</button>
+        </div>
+
+        <form id="withdraw-target-form" novalidate>
+          <input type="hidden" id="withdraw-target-id" />
+
+          <div class="deposit-target-banner">
+            <span class="deposit-target-name" id="withdraw-target-name">-</span>
+            <div class="deposit-target-progress-info">
+              <span>Dana Tersedia: <strong id="withdraw-available-saved">Rp0</strong></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="withdraw-amount" class="form-label">Nominal Penarikan (Rp) <span class="required-star">*</span></label>
+            <input type="number" id="withdraw-amount" class="form-input" placeholder="Nominal ditarik" min="1000" required />
+          </div>
+
+          <div class="deposit-checkbox-row">
+            <label class="checkbox-label" for="withdraw-record-tx">
+              <input type="checkbox" id="withdraw-record-tx" />
+              <span>Kembalikan ke saldo (catat sebagai pemasukan di Riwayat Transaksi)</span>
+            </label>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" id="btn-cancel-withdraw" class="btn btn-secondary">Batal</button>
+            <button type="submit" class="btn btn-danger">Tarik Dana</button>
+          </div>
+        </form>
       </div>
     </div>
 

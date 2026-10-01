@@ -1,5 +1,5 @@
 /* ==========================================================================
-   FINANCE TRACKER - MODERN, CLEAN, MINIMAL, MOBILE-FIRST CSS
+   FiNOVA - MODERN, CLEAN, MINIMAL, MOBILE-FIRST CSS
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -1265,6 +1265,953 @@ input, select, textarea, .stat-amount, .balance-amount, .tx-amount, .summary-val
 
 .fill-income {
   background-color: var(--income-color);
+}
+
+/* Smart Financial Metrics & Cashflow Status */
+.summary-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cashflow-status-badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cashflow-status-badge.status-healthy {
+  background-color: var(--income-bg);
+  color: var(--income-color);
+}
+
+.cashflow-status-badge.status-warning {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.cashflow-status-badge.status-danger {
+  background-color: var(--expense-bg);
+  color: var(--expense-color);
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.metric-card {
+  background-color: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border: 1px solid var(--border-light);
+}
+
+.metric-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.metric-val {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.metric-sub {
+  font-size: 0.6875rem;
+  color: var(--text-subtle);
+}
+
+/* Chart Sections in Report */
+.chart-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  border: 1px solid var(--border-light);
+}
+
+.chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chart-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chart-toggle-group {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+  gap: 2px;
+}
+
+.btn-chart-toggle {
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-chart-toggle:hover {
+  color: var(--text-main);
+}
+
+.btn-chart-toggle.is-active {
+  background-color: var(--primary);
+  color: #ffffff;
+}
+
+.chart-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.chart-subtitle {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+}
+
+.chart-legend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.dot-income {
+  background-color: var(--income-color);
+}
+
+.dot-expense {
+  background-color: var(--expense-color);
+}
+
+/* Chart Canvas Wrappers */
+.chart-canvas-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  height: 210px;
+  margin-top: 4px;
+}
+
+.chart-canvas-targets {
+  height: 180px;
+}
+
+.chart-donut-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 4px 0;
+}
+
+.report-targets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.report-target-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+}
+
+.report-target-name {
+  font-weight: 600;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.report-target-progress-txt {
+  font-weight: 700;
+  color: var(--income-color);
+}
+
+/* Bar Chart Container & Tooltips */
+.bar-chart-container {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+}
+
+.bar-chart-wrapper {
+  width: 100%;
+  min-width: 260px;
+}
+
+.bar-chart-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.chart-tooltip {
+  position: absolute;
+  background-color: #0f172a;
+  color: #ffffff;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  pointer-events: none;
+  z-index: 20;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+  transform: translate(-50%, -100%);
+  margin-top: -8px;
+  transition: opacity 0.15s ease;
+}
+
+[data-theme="dark"] .chart-tooltip {
+  background-color: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Donut Chart Container */
+.donut-chart-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 16px;
+  padding: 8px 0;
+  flex-wrap: wrap;
+}
+
+.donut-chart-visual {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  min-width: 140px;
+  min-height: 140px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-svg {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+}
+
+.donut-bg-circle {
+  fill: none;
+  stroke: var(--bg-muted);
+  stroke-width: 16;
+}
+
+.donut-slice-income {
+  fill: none;
+  stroke: var(--income-color);
+  stroke-width: 16;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.5s ease;
+}
+
+.donut-slice-expense {
+  fill: none;
+  stroke: var(--expense-color);
+  stroke-width: 16;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.5s ease;
+}
+
+.donut-center-info {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.donut-center-pct {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.1;
+}
+
+.donut-center-lbl {
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.donut-legend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-width: 140px;
+}
+
+.donut-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.bg-income {
+  background-color: var(--income-color);
+}
+
+.bg-expense {
+  background-color: var(--expense-color);
+}
+
+.donut-legend-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.donut-legend-name {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.donut-legend-val {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* Category Multi-segment Distribution Bar */
+.distribution-bar {
+  display: flex;
+  height: 12px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  background-color: var(--bg-muted);
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.dist-segment {
+  height: 100%;
+  transition: width 0.3s ease;
+  position: relative;
+  cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   9.5. Target Pembelian View (🎯 Target) & Dashboard Widget
+   -------------------------------------------------------------------------- */
+/* Dashboard Widget Target */
+.dash-target-widget {
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.widget-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.widget-target-icon {
+  font-size: 1.125rem;
+}
+
+.dash-target-preview-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dash-target-mini-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  background-color: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+}
+
+.dash-target-mini-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dash-target-mini-name {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dash-target-mini-pct {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.dash-target-mini-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+}
+
+/* Target Hero Card in View-Targets */
+.target-hero-card {
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-subtle) 100%);
+}
+
+.target-hero-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.target-hero-title {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.target-hero-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.target-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 12px;
+  background-color: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+}
+
+.target-stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.target-stat-label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.target-stat-val {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.target-global-progress-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.progress-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background-color: var(--bg-muted);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #10b981);
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease;
+}
+
+/* Target List Card & Items */
+.target-list-card {
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.target-filter-group {
+  margin-bottom: 0;
+}
+
+.target-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Individual Target Card */
+.target-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  background-color: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  border-left: 4px solid var(--primary);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.target-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.target-card.is-completed {
+  border-left-color: var(--income-color);
+  background: linear-gradient(135deg, var(--bg-subtle) 0%, rgba(16, 185, 129, 0.05) 100%);
+}
+
+.target-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.target-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.target-cat-badge {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.target-card-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.target-card-note {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.target-status-badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.status-active-pill {
+  background-color: var(--primary-light);
+  color: var(--primary);
+}
+
+.status-completed-pill {
+  background-color: var(--income-bg);
+  color: var(--income-color);
+}
+
+/* Target Numbers & Progress */
+.target-numbers-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.target-saved-val {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--income-color);
+}
+
+.target-goal-val {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.target-track-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.target-pct-indicator {
+  align-self: flex-end;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.target-progress-bar {
+  width: 100%;
+  height: 9px;
+  background-color: var(--bg-muted);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.target-bar-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+.target-card.is-completed .target-bar-fill {
+  background: var(--income-color);
+}
+
+/* Target Smart Advice / Deadline Banner */
+.target-advice-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  padding: 6px 8px;
+  background-color: var(--bg-card);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  flex-wrap: wrap;
+}
+
+.target-deadline-tag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.target-saving-rate-hint {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+/* Target Card Actions */
+.target-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 4px;
+  border-top: 1px solid var(--border-light);
+}
+
+.btn-deposit-target {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  height: 32px;
+  padding: 0 12px;
+  font-size: 0.75rem;
+}
+
+.target-extra-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-target-icon {
+  background: transparent;
+  border: none;
+  color: var(--text-subtle);
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.12s ease;
+}
+
+.btn-target-icon:hover {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+}
+
+.btn-target-delete:hover {
+  color: var(--expense-color);
+}
+
+/* Target Empty State */
+.target-empty-state {
+  text-align: center;
+  padding: 32px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.target-empty-icon {
+  font-size: 2.2rem;
+  margin-bottom: 2px;
+}
+
+.target-empty-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.target-empty-desc {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  max-width: 280px;
+  line-height: 1.45;
+  margin-bottom: 6px;
+}
+
+/* Target Quick Presets in Modal */
+.target-presets-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: var(--bg-subtle);
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  margin-bottom: 14px;
+}
+
+.target-presets-title {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.target-presets-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.btn-preset-target {
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  white-space: nowrap;
+}
+
+.btn-preset-target:hover {
+  background-color: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+/* Deposit & Withdraw Target Modals */
+.deposit-target-banner {
+  padding: 12px;
+  background-color: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 1px solid var(--border-light);
+}
+
+.deposit-target-name {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.deposit-target-progress-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.quick-chips-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.btn-chip {
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.btn-chip:hover {
+  background-color: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.deposit-checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin-top: 2px;
+  accent-color: var(--primary);
+}
+
+.field-hint {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  margin-top: 3px;
+  display: block;
+}
+
+.required-star {
+  color: var(--expense-color);
 }
 
 /* --------------------------------------------------------------------------
