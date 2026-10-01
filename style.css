@@ -668,6 +668,68 @@ input, select, textarea, .stat-amount, .balance-amount, .tx-amount, .summary-val
   cursor: pointer;
 }
 
+/* Payment Method Selector Grid */
+.payment-method-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+@media (max-width: 380px) {
+  .payment-method-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+}
+
+.payment-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 4px;
+  background-color: var(--bg-card);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  text-align: center;
+}
+
+.payment-pill:hover {
+  border-color: var(--primary);
+  background-color: var(--bg-subtle);
+}
+
+.payment-pill.is-active {
+  border-color: var(--primary);
+  background-color: rgba(14, 165, 233, 0.12);
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.25);
+}
+
+[data-theme="dark"] .payment-pill.is-active {
+  background-color: rgba(14, 165, 233, 0.22);
+}
+
+.payment-pill-icon {
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+.payment-pill-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.payment-pill.is-active .payment-pill-label {
+  color: var(--primary);
+  font-weight: 700;
+}
+
 .btn-submit {
   height: 48px;
   font-size: 0.9375rem;
@@ -847,6 +909,53 @@ input, select, textarea, .stat-amount, .balance-amount, .tx-amount, .summary-val
   cursor: pointer;
 }
 
+/* Method Filter Horizontal Scroll Chips */
+.method-filter-scroll {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 2px 2px 8px 2px;
+  margin-bottom: 8px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.method-filter-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.btn-method-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.12s ease;
+  user-select: none;
+}
+
+.btn-method-chip:hover {
+  background-color: var(--bg-muted);
+  color: var(--text-main);
+  border-color: var(--border-focus);
+}
+
+.btn-method-chip.is-active {
+  background-color: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 1px 3px rgba(14, 165, 233, 0.3);
+}
+
 /* Date Filter Panel (Clean, Structured, Zero-Overflow) */
 .date-filter-panel {
   display: flex;
@@ -1015,6 +1124,13 @@ input, select, textarea, .stat-amount, .balance-amount, .tx-amount, .summary-val
   overflow: hidden;
 }
 
+.tx-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
 .tx-category {
   font-size: 0.875rem;
   font-weight: 700;
@@ -1022,6 +1138,87 @@ input, select, textarea, .stat-amount, .balance-amount, .tx-amount, .summary-val
   line-height: 1.3;
   word-break: break-word;
   overflow-wrap: break-word;
+}
+
+.tx-method-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  border: 1px solid var(--border-light);
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.badge-method-tunai {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.badge-method-qris {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+.badge-method-bank {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+  border-color: rgba(59, 130, 246, 0.25);
+}
+
+.badge-method-ewallet {
+  background-color: rgba(168, 85, 247, 0.1);
+  color: #9333ea;
+  border-color: rgba(168, 85, 247, 0.25);
+}
+
+.badge-method-kartu {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+  border-color: rgba(245, 158, 11, 0.25);
+}
+
+.badge-method-lainnya {
+  background-color: rgba(100, 116, 139, 0.1);
+  color: #475569;
+  border-color: rgba(100, 116, 139, 0.25);
+}
+
+[data-theme="dark"] .badge-method-tunai {
+  background-color: rgba(16, 185, 129, 0.18);
+  color: #34d399;
+}
+
+[data-theme="dark"] .badge-method-qris {
+  background-color: rgba(239, 68, 68, 0.18);
+  color: #f87171;
+}
+
+[data-theme="dark"] .badge-method-bank {
+  background-color: rgba(59, 130, 246, 0.18);
+  color: #60a5fa;
+}
+
+[data-theme="dark"] .badge-method-ewallet {
+  background-color: rgba(168, 85, 247, 0.18);
+  color: #c084fc;
+}
+
+[data-theme="dark"] .badge-method-kartu {
+  background-color: rgba(245, 158, 11, 0.18);
+  color: #fbbf24;
+}
+
+[data-theme="dark"] .badge-method-lainnya {
+  background-color: rgba(100, 116, 139, 0.18);
+  color: #94a3b8;
 }
 
 .tx-note {

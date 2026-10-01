@@ -28,6 +28,7 @@ const SAMPLE_TRANSACTIONS = [
     type: 'income',
     category: 'Driver',
     amount: 150000,
+    paymentMethod: 'Tunai',
     note: 'Order pagi & siang'
   },
   {
@@ -36,6 +37,7 @@ const SAMPLE_TRANSACTIONS = [
     type: 'expense',
     category: 'Bensin',
     amount: 50000,
+    paymentMethod: 'QRIS',
     note: 'Pertalite full tank'
   },
   {
@@ -44,6 +46,7 @@ const SAMPLE_TRANSACTIONS = [
     type: 'expense',
     category: 'Makanan',
     amount: 25000,
+    paymentMethod: 'Tunai',
     note: 'Makan siang warteg'
   },
   {
@@ -52,6 +55,7 @@ const SAMPLE_TRANSACTIONS = [
     type: 'income',
     category: 'Freelance',
     amount: 500000,
+    paymentMethod: 'Transfer Bank',
     note: 'Desain banner'
   },
   {
@@ -60,6 +64,7 @@ const SAMPLE_TRANSACTIONS = [
     type: 'expense',
     category: 'Tagihan',
     amount: 150000,
+    paymentMethod: 'E-Wallet',
     note: 'Pulsa & paket data'
   }
 ];
@@ -88,9 +93,37 @@ const SAMPLE_TARGETS = [
   }
 ];
 
+// Definisi Metode Pembayaran / Transaksi
+const PAYMENT_METHOD_ICONS = {
+  Tunai: '💵',
+  QRIS: '📱',
+  'Transfer Bank': '🏦',
+  'E-Wallet': '👛',
+  Kartu: '💳',
+  Lainnya: '🔄'
+};
+
+function getPaymentMethodIcon(method) {
+  return PAYMENT_METHOD_ICONS[method] || '💵';
+}
+
+function getPaymentMethodBadgeClass(method) {
+  switch (method) {
+    case 'QRIS': return 'badge-method-qris';
+    case 'Transfer Bank': return 'badge-method-bank';
+    case 'E-Wallet': return 'badge-method-ewallet';
+    case 'Kartu': return 'badge-method-kartu';
+    case 'Lainnya': return 'badge-method-lainnya';
+    case 'Tunai':
+    default:
+      return 'badge-method-tunai';
+  }
+}
+
 // State Global
 let currentNav = 'dashboard';
 let txFilterType = 'all'; // 'all' | 'income' | 'expense'
+let txFilterMethod = 'all'; // 'all' | 'Tunai' | 'QRIS' | 'Transfer Bank' | 'E-Wallet' | 'Kartu' | 'Lainnya'
 let txSearchQuery = '';
 let txFilterDateFrom = '';
 let txFilterDateTo = '';
@@ -223,13 +256,26 @@ function getChartThemeColors() {
 function formatDateDisplay(dateString) {
   if (!dateString) return '';
   try {
+    const todayStr = getTodayString();
     const parts = dateString.split('-');
     if (parts.length === 3) {
       const year = parts[0];
       const monthIndex = parseInt(parts[1], 10) - 1;
       const day = parseInt(parts[2], 10);
       const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-      return `${day} ${months[monthIndex] || ''} ${year}`;
+      const formatted = `${day} ${months[monthIndex] || ''} ${year}`;
+
+      const now = new Date();
+      const yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
+
+      if (dateString === todayStr) {
+        return `Hari Ini, ${formatted}`;
+      } else if (dateString === yStr) {
+        return `Kemarin, ${formatted}`;
+      }
+      return formatted;
     }
     return dateString;
   } catch (e) {
@@ -391,11 +437,17 @@ function renderDashboard() {
   recentItems.forEach((tx) => {
     const item = document.createElement('div');
     const isIncome = tx.type === 'income';
+    const method = tx.paymentMethod || 'Tunai';
+    const methodIcon = getPaymentMethodIcon(method);
+    const badgeClass = getPaymentMethodBadgeClass(method);
     item.className = `tx-item ${isIncome ? 'tx-income' : 'tx-expense'}`;
 
     item.innerHTML = `
       <div class="tx-main-info">
-        <span class="tx-category">${escapeHTML(tx.category)}</span>
+        <div class="tx-title-row">
+          <span class="tx-category">${escapeHTML(tx.category)}</span>
+          <span class="tx-method-badge ${badgeClass}">${methodIcon} ${escapeHTML(method)}</span>
+        </div>
         <span class="tx-note">${escapeHTML(tx.note || formatDateShort(tx.date))}</span>
       </div>
       <div class="tx-right-info">
@@ -471,12 +523,16 @@ function handleAddTransactionSubmit(e) {
     return;
   }
 
+  const methodRadio = form.querySelector('input[name="payment-method"]:checked');
+  const paymentMethod = methodRadio ? methodRadio.value : 'Tunai';
+
   const newTx = {
     id: Date.now(),
     date: dateVal,
     type: type,
     category: categoryVal,
     amount: Math.round(amountVal),
+    paymentMethod: paymentMethod,
     note: noteVal
   };
 
@@ -496,6 +552,18 @@ function handleAddTransactionSubmit(e) {
     labelExpense.classList.remove('is-active');
   }
   populateCategorySelect('category', 'income');
+
+  // Reset payment method pills to Tunai
+  const addPills = document.querySelectorAll('#add-payment-method-grid .payment-pill');
+  addPills.forEach((p) => {
+    if (p.dataset.method === 'Tunai') {
+      p.classList.add('is-active');
+      const inp = p.querySelector('input');
+      if (inp) inp.checked = true;
+    } else {
+      p.classList.remove('is-active');
+    }
+  });
 
   // Berikan opsi navigasi ke dashboard
   switchView('dashboard');
@@ -518,11 +586,15 @@ function renderTransactionsList() {
     // 1. Jenis
     if (txFilterType !== 'all' && tx.type !== txFilterType) return false;
 
+    // 1b. Metode Pembayaran
+    if (txFilterMethod !== 'all' && (tx.paymentMethod || 'Tunai') !== txFilterMethod) return false;
+
     // 2. Pencarian (kategori atau catatan)
     if (txSearchQuery) {
       const cat = (tx.category || '').toLowerCase();
       const note = (tx.note || '').toLowerCase();
-      if (!cat.includes(txSearchQuery) && !note.includes(txSearchQuery)) return false;
+      const method = (tx.paymentMethod || '').toLowerCase();
+      if (!cat.includes(txSearchQuery) && !note.includes(txSearchQuery) && !method.includes(txSearchQuery)) return false;
     }
 
     // 3. Rentang Tanggal
@@ -560,8 +632,9 @@ function renderTransactionsList() {
     groupsByDate[tx.date].push(tx);
   });
 
-  // Render per grup tanggal
-  Object.keys(groupsByDate).forEach((dateKey) => {
+  // Render per grup tanggal (urut tanggal terbaru di atas)
+  const sortedDateKeys = Object.keys(groupsByDate).sort((a, b) => b.localeCompare(a));
+  sortedDateKeys.forEach((dateKey) => {
     const txItems = groupsByDate[dateKey];
     const groupEl = document.createElement('div');
     groupEl.className = 'tx-date-group';
@@ -588,11 +661,17 @@ function renderTransactionsList() {
     txItems.forEach((tx) => {
       const item = document.createElement('div');
       const isIncome = tx.type === 'income';
+      const method = tx.paymentMethod || 'Tunai';
+      const methodIcon = getPaymentMethodIcon(method);
+      const badgeClass = getPaymentMethodBadgeClass(method);
       item.className = `tx-item ${isIncome ? 'tx-income' : 'tx-expense'}`;
 
       item.innerHTML = `
         <div class="tx-main-info">
-          <span class="tx-category">${escapeHTML(tx.category)}</span>
+          <div class="tx-title-row">
+            <span class="tx-category">${escapeHTML(tx.category)}</span>
+            <span class="tx-method-badge ${badgeClass}">${methodIcon} ${escapeHTML(method)}</span>
+          </div>
           <span class="tx-note">${escapeHTML(tx.note || '(Tanpa catatan)')}</span>
         </div>
         <div class="tx-right-info">
@@ -686,6 +765,20 @@ function openEditModal(tx) {
 
   populateCategorySelect('edit-category', tx.type, tx.category);
 
+  // Payment method selection
+  const curMethod = tx.paymentMethod || 'Tunai';
+  const methodRadio = modal.querySelector(`input[name="edit-payment-method"][value="${curMethod}"]`);
+  if (methodRadio) {
+    methodRadio.checked = true;
+  }
+  modal.querySelectorAll('#edit-payment-method-grid .payment-pill').forEach((pill) => {
+    if (pill.dataset.method === curMethod) {
+      pill.classList.add('is-active');
+    } else {
+      pill.classList.remove('is-active');
+    }
+  });
+
   modal.hidden = false;
   modal.classList.add('is-open');
 }
@@ -708,6 +801,8 @@ function handleEditFormSubmit(e) {
   const note = document.getElementById('edit-note').value.trim();
   const typeRadio = document.querySelector('input[name="edit-type"]:checked');
   const type = typeRadio ? typeRadio.value : 'income';
+  const methodRadio = document.querySelector('input[name="edit-payment-method"]:checked');
+  const paymentMethod = methodRadio ? methodRadio.value : 'Tunai';
 
   if (!amount || amount <= 0) {
     showToast('Nominal harus lebih dari Rp0.');
@@ -722,6 +817,7 @@ function handleEditFormSubmit(e) {
       amount,
       category,
       date,
+      paymentMethod,
       note,
       type
     };
@@ -773,16 +869,33 @@ function renderReport() {
   let totalExpense = 0;
   const expenseByCat = {};
   const incomeByCat = {};
+  const methodStats = {
+    Tunai: { income: 0, expense: 0, total: 0, count: 0 },
+    QRIS: { income: 0, expense: 0, total: 0, count: 0 },
+    'Transfer Bank': { income: 0, expense: 0, total: 0, count: 0 },
+    'E-Wallet': { income: 0, expense: 0, total: 0, count: 0 },
+    Kartu: { income: 0, expense: 0, total: 0, count: 0 },
+    Lainnya: { income: 0, expense: 0, total: 0, count: 0 }
+  };
 
   filtered.forEach((tx) => {
     const amt = Number(tx.amount) || 0;
+    const method = tx.paymentMethod || 'Tunai';
+    if (!methodStats[method]) {
+      methodStats[method] = { income: 0, expense: 0, total: 0, count: 0 };
+    }
+
     if (tx.type === 'income') {
       totalIncome += amt;
       incomeByCat[tx.category] = (incomeByCat[tx.category] || 0) + amt;
+      methodStats[method].income += amt;
     } else {
       totalExpense += amt;
       expenseByCat[tx.category] = (expenseByCat[tx.category] || 0) + amt;
+      methodStats[method].expense += amt;
     }
+    methodStats[method].total += amt;
+    methodStats[method].count += 1;
   });
 
   const net = totalIncome - totalExpense;
@@ -848,6 +961,7 @@ function renderReport() {
   // Render breakdowns
   renderCategoryBreakdownList('rep-expense-breakdown', expenseByCat, totalExpense, 'expense');
   renderCategoryBreakdownList('rep-income-breakdown', incomeByCat, totalIncome, 'income');
+  renderMethodBreakdownList('rep-method-breakdown', methodStats, totalIncome + totalExpense);
 }
 
 function renderDonutChart(income, expense, savingsRate) {
@@ -1401,6 +1515,55 @@ function renderCategoryBreakdownList(containerId, dataMap, totalAmount, type) {
   });
 }
 
+function renderMethodBreakdownList(containerId, methodStats, totalTurnover) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.innerHTML = '';
+  const entries = Object.entries(methodStats).filter(([_, stats]) => stats.count > 0);
+
+  if (entries.length === 0) {
+    container.innerHTML = '<p class="empty-state-mini">Tidak ada data transaksi pada periode ini.</p>';
+    return;
+  }
+
+  // Sort by total turnover descending
+  entries.sort((a, b) => b[1].total - a[1].total);
+
+  entries.forEach(([methodName, stats]) => {
+    const pct = totalTurnover > 0 ? Math.round((stats.total / totalTurnover) * 100) : 0;
+    const icon = getPaymentMethodIcon(methodName);
+    const badgeClass = getPaymentMethodBadgeClass(methodName);
+    const item = document.createElement('div');
+    item.className = 'breakdown-item';
+
+    item.innerHTML = `
+      <div class="breakdown-header">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="font-size: 1.125rem;">${icon}</span>
+          <span class="breakdown-cat-name" style="font-weight: 700;">${escapeHTML(methodName)}</span>
+          <span class="tx-method-badge ${badgeClass}" style="font-size: 0.625rem;">
+            ${stats.count} transaksi
+          </span>
+        </div>
+        <div class="breakdown-values">
+          <span style="font-weight: 700;">${formatRupiah(stats.total)}</span>
+          <span class="breakdown-pct">(${pct}%)</span>
+        </div>
+      </div>
+      <div class="breakdown-bar-bg" style="height: 7px;">
+        <div class="breakdown-bar-fill" style="width: ${pct}%; background: var(--primary);"></div>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 0.6875rem; color: var(--text-muted); margin-top: 4px;">
+        <span class="income-color">Uang Masuk: +${formatRupiah(stats.income)}</span>
+        <span class="expense-color">Uang Keluar: -${formatRupiah(stats.expense)}</span>
+      </div>
+    `;
+
+    container.appendChild(item);
+  });
+}
+
 // ==========================================
 // 9.5. VIEW: TARGET PEMBELIAN CONTROLLER
 // ==========================================
@@ -1822,6 +1985,7 @@ function handleDepositFormSubmit(e) {
       type: 'expense',
       category: 'Tabungan',
       amount,
+      paymentMethod: 'Transfer Bank',
       note: `Nabung untuk ${targets[idx].name}`
     });
     saveTransactions(transactions);
@@ -1902,6 +2066,7 @@ function handleWithdrawFormSubmit(e) {
       type: 'income',
       category: 'Lainnya',
       amount,
+      paymentMethod: 'Transfer Bank',
       note: `Tarik tabungan dari ${targets[idx].name}`
     });
     saveTransactions(transactions);
@@ -1944,11 +2109,12 @@ function exportCSV() {
     return;
   }
 
-  const headers = ['Tanggal', 'Tipe', 'Kategori', 'Nominal', 'Catatan'];
+  const headers = ['Tanggal', 'Tipe', 'Kategori', 'Metode Transaksi', 'Nominal', 'Catatan'];
   const rows = transactions.map((tx) => [
     `"${tx.date}"`,
     `"${tx.type === 'income' ? 'Pemasukan' : 'Pengeluaran'}"`,
     `"${(tx.category || '').replace(/"/g, '""')}"`,
+    `"${(tx.paymentMethod || 'Tunai').replace(/"/g, '""')}"`,
     tx.amount,
     `"${(tx.note || '').replace(/"/g, '""')}"`
   ]);
@@ -2278,6 +2444,29 @@ function initApp() {
 
     // Default kategori
     populateCategorySelect('category', 'income');
+
+    // Payment Method Pills for Add Form
+    const addMethodPills = form.querySelectorAll('#add-payment-method-grid .payment-pill');
+    addMethodPills.forEach((pill) => {
+      pill.addEventListener('click', () => {
+        addMethodPills.forEach((p) => p.classList.remove('is-active'));
+        pill.classList.add('is-active');
+        const inp = pill.querySelector('input');
+        if (inp) inp.checked = true;
+      });
+    });
+
+    // Quick Amount Chips
+    form.querySelectorAll('[data-amount-set]').forEach((chip) => {
+      chip.addEventListener('click', (e) => {
+        const val = e.currentTarget.dataset.amountSet;
+        const amountInput = document.getElementById('amount');
+        if (amountInput && val) {
+          amountInput.value = val;
+          amountInput.focus();
+        }
+      });
+    });
   }
 
   // Quick add category button
@@ -2290,6 +2479,16 @@ function initApp() {
       document.querySelectorAll('.filter-group .btn-filter').forEach((b) => b.classList.remove('is-active'));
       e.currentTarget.classList.add('is-active');
       txFilterType = e.currentTarget.dataset.filter;
+      renderTransactionsList();
+    });
+  });
+
+  // Filter Metode Pembayaran Chips
+  document.querySelectorAll('#method-filter-chips .btn-method-chip').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#method-filter-chips .btn-method-chip').forEach((b) => b.classList.remove('is-active'));
+      e.currentTarget.classList.add('is-active');
+      txFilterMethod = e.currentTarget.dataset.methodFilter;
       renderTransactionsList();
     });
   });
@@ -2551,6 +2750,17 @@ function initApp() {
       if (editLabelIncome) editLabelIncome.addEventListener('click', selectEditIncome);
       if (editLabelExpense) editLabelExpense.addEventListener('click', selectEditExpense);
     }
+
+    // Edit Payment Method Pills
+    const editMethodPills = editForm.querySelectorAll('#edit-payment-method-grid .payment-pill');
+    editMethodPills.forEach((pill) => {
+      pill.addEventListener('click', () => {
+        editMethodPills.forEach((p) => p.classList.remove('is-active'));
+        pill.classList.add('is-active');
+        const inp = pill.querySelector('input');
+        if (inp) inp.checked = true;
+      });
+    });
   }
 
   const btnCloseEdit = document.getElementById('btn-close-edit-modal');

@@ -258,6 +258,14 @@
                     inputmode="numeric"
                   />
                 </div>
+                <div class="quick-chips-row" style="margin-top: 6px;">
+                  <button type="button" class="btn-chip" data-amount-set="10000">10rb</button>
+                  <button type="button" class="btn-chip" data-amount-set="20000">20rb</button>
+                  <button type="button" class="btn-chip" data-amount-set="50000">50rb</button>
+                  <button type="button" class="btn-chip" data-amount-set="100000">100rb</button>
+                  <button type="button" class="btn-chip" data-amount-set="200000">200rb</button>
+                  <button type="button" class="btn-chip" data-amount-set="500000">500rb</button>
+                </div>
               </div>
 
               <!-- Kategori -->
@@ -270,6 +278,43 @@
                   <select id="category" name="category" class="form-select" required>
                     <!-- Kategori di-generate dinamis berdasarkan jenis -->
                   </select>
+                </div>
+              </div>
+
+              <!-- Metode Pembayaran / Transaksi -->
+              <div class="form-group">
+                <label class="form-label">Metode Transaksi</label>
+                <div class="payment-method-grid" id="add-payment-method-grid" role="radiogroup" aria-label="Metode Transaksi">
+                  <label class="payment-pill is-active" data-method="Tunai">
+                    <input type="radio" name="payment-method" value="Tunai" class="sr-only" checked />
+                    <span class="payment-pill-icon">💵</span>
+                    <span class="payment-pill-label">Tunai (Cash)</span>
+                  </label>
+                  <label class="payment-pill" data-method="QRIS">
+                    <input type="radio" name="payment-method" value="QRIS" class="sr-only" />
+                    <span class="payment-pill-icon">📱</span>
+                    <span class="payment-pill-label">QRIS</span>
+                  </label>
+                  <label class="payment-pill" data-method="Transfer Bank">
+                    <input type="radio" name="payment-method" value="Transfer Bank" class="sr-only" />
+                    <span class="payment-pill-icon">🏦</span>
+                    <span class="payment-pill-label">Transfer Bank</span>
+                  </label>
+                  <label class="payment-pill" data-method="E-Wallet">
+                    <input type="radio" name="payment-method" value="E-Wallet" class="sr-only" />
+                    <span class="payment-pill-icon">👛</span>
+                    <span class="payment-pill-label">E-Wallet</span>
+                  </label>
+                  <label class="payment-pill" data-method="Kartu">
+                    <input type="radio" name="payment-method" value="Kartu" class="sr-only" />
+                    <span class="payment-pill-icon">💳</span>
+                    <span class="payment-pill-label">Kartu Debit/CC</span>
+                  </label>
+                  <label class="payment-pill" data-method="Lainnya">
+                    <input type="radio" name="payment-method" value="Lainnya" class="sr-only" />
+                    <span class="payment-pill-icon">🔄</span>
+                    <span class="payment-pill-label">Lainnya</span>
+                  </label>
                 </div>
               </div>
 
@@ -351,6 +396,17 @@
                   ✕
                 </button>
               </div>
+            </div>
+
+            <!-- Filter Metode Pembayaran (Tunai, QRIS, Transfer, E-Wallet, dll) -->
+            <div class="method-filter-scroll" id="method-filter-chips" role="group" aria-label="Filter Metode Pembayaran">
+              <button type="button" class="btn-method-chip is-active" data-method-filter="all">Semua Metode</button>
+              <button type="button" class="btn-method-chip" data-method-filter="Tunai">💵 Tunai</button>
+              <button type="button" class="btn-method-chip" data-method-filter="QRIS">📱 QRIS</button>
+              <button type="button" class="btn-method-chip" data-method-filter="Transfer Bank">🏦 Transfer</button>
+              <button type="button" class="btn-method-chip" data-method-filter="E-Wallet">👛 E-Wallet</button>
+              <button type="button" class="btn-method-chip" data-method-filter="Kartu">💳 Kartu</button>
+              <button type="button" class="btn-method-chip" data-method-filter="Lainnya">🔄 Lainnya</button>
             </div>
 
             <!-- Filter Rentang Tanggal (Opsional) -->
@@ -633,6 +689,19 @@
                 <!-- Render bar progress per kategori -->
               </div>
             </div>
+
+            <!-- Analisis Metode Pembayaran (Uang Masuk & Keluar: Cash, QRIS, Bank, E-Wallet) -->
+            <div class="breakdown-section">
+              <div class="section-header" style="margin-bottom: 8px;">
+                <div>
+                  <h3 class="breakdown-title">💳 Metode Transaksi (Uang Masuk & Keluar)</h3>
+                  <p class="chart-subtitle">Penggunaan Tunai, QRIS, Transfer Bank, E-Wallet, & Kartu</p>
+                </div>
+              </div>
+              <div id="rep-method-breakdown" class="category-breakdown-list">
+                <!-- Render bar progress per metode pembayaran via JS -->
+              </div>
+            </div>
           </div>
         </section>
 
@@ -868,6 +937,43 @@
           <div class="form-group">
             <label for="edit-category" class="form-label">Kategori</label>
             <select id="edit-category" class="form-select" required></select>
+          </div>
+
+          <!-- Metode Pembayaran Edit -->
+          <div class="form-group">
+            <label class="form-label">Metode Transaksi</label>
+            <div class="payment-method-grid" id="edit-payment-method-grid" role="radiogroup" aria-label="Metode Transaksi">
+              <label class="payment-pill is-active" data-method="Tunai">
+                <input type="radio" name="edit-payment-method" value="Tunai" class="sr-only" checked />
+                <span class="payment-pill-icon">💵</span>
+                <span class="payment-pill-label">Tunai (Cash)</span>
+              </label>
+              <label class="payment-pill" data-method="QRIS">
+                <input type="radio" name="edit-payment-method" value="QRIS" class="sr-only" />
+                <span class="payment-pill-icon">📱</span>
+                <span class="payment-pill-label">QRIS</span>
+              </label>
+              <label class="payment-pill" data-method="Transfer Bank">
+                <input type="radio" name="edit-payment-method" value="Transfer Bank" class="sr-only" />
+                <span class="payment-pill-icon">🏦</span>
+                <span class="payment-pill-label">Transfer Bank</span>
+              </label>
+              <label class="payment-pill" data-method="E-Wallet">
+                <input type="radio" name="edit-payment-method" value="E-Wallet" class="sr-only" />
+                <span class="payment-pill-icon">👛</span>
+                <span class="payment-pill-label">E-Wallet</span>
+              </label>
+              <label class="payment-pill" data-method="Kartu">
+                <input type="radio" name="edit-payment-method" value="Kartu" class="sr-only" />
+                <span class="payment-pill-icon">💳</span>
+                <span class="payment-pill-label">Kartu Debit/CC</span>
+              </label>
+              <label class="payment-pill" data-method="Lainnya">
+                <input type="radio" name="edit-payment-method" value="Lainnya" class="sr-only" />
+                <span class="payment-pill-icon">🔄</span>
+                <span class="payment-pill-label">Lainnya</span>
+              </label>
+            </div>
           </div>
 
           <div class="form-group">
